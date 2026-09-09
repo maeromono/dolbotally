@@ -8,14 +8,14 @@ use ratatui::{
     widgets::{ListState, Paragraph},
 };
 
-use crate::{counter::{self, render_counter}, counterlist::{self, render_counter_list}, header::render_header};
+use crate::{counter::{self, render_counter}, counterlist::{self, render_counter_list}, header::render_header, newcounter::{NewCounter, render_countermake_screen}};
 
-#[derive(Debug)]
 pub struct DumbTallyApp {
     pub state: DumbTallyAppState,
     pub counters: Vec<Counter>,
     pub counter_index: usize,
     pub counter_list: ListState,
+    pub new_counter: NewCounter,
 }
 
 impl Default for DumbTallyApp {
@@ -23,14 +23,14 @@ impl Default for DumbTallyApp {
         Self {
             state: DumbTallyAppState::Main,
             counters: vec![Counter {
-                name: String::from("ass counter"),
+                name: String::from("test #1"),
                 value: 0,
                 pos_add: 10,
                 neg_add: 10,
                 min_val: -500,
                 max_val: 1000
             }, Counter {
-                name: String::from("ass counter 2"),
+                name: String::from("test #2"),
                 value: 0,
                 pos_add: 10,
                 neg_add: 10,
@@ -38,7 +38,8 @@ impl Default for DumbTallyApp {
                 max_val: 1000
             }],
             counter_index: 0,
-            counter_list: ListState::default().with_selected(Some(0))
+            counter_list: ListState::default().with_selected(Some(0)),
+            new_counter: NewCounter::default()
         }
     }
 }
@@ -56,8 +57,8 @@ pub struct Counter {
 #[derive(Debug, PartialEq, Eq)]
 pub enum DumbTallyAppState {
     Main,
-    NewCounter,
     CounterPick,
+    NewCounter,
     Quit,
 }
 
@@ -95,6 +96,7 @@ impl DumbTallyApp {
             match self.state {
                 DumbTallyAppState::Main => render_counter(self, frame, main_layout[1]),
                 DumbTallyAppState::CounterPick => render_counter_list(self, frame, main_layout[1]),
+                DumbTallyAppState::NewCounter => render_countermake_screen(self, frame, main_layout[1]),
                 _ => todo!()
             }
         }

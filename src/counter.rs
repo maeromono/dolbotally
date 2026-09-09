@@ -75,6 +75,7 @@ pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyCode) {
     match key {
         KeyCode::Char('=') => increase_current_counter_val(dt),
         KeyCode::Char('-') => decrease_current_counter_val(dt),
+        KeyCode::Char('n') => dt.state = DumbTallyAppState::NewCounter,
         KeyCode::Esc => dt.state = DumbTallyAppState::CounterPick,
         _ => {}
     }
