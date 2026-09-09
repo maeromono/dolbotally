@@ -27,8 +27,8 @@ impl Default for DumbTallyApp {
                 value: 0,
                 pos_add: 10,
                 neg_add: 10,
-                min_val: -2000,
-                max_val: 10000
+                min_val: -500,
+                max_val: 1000
             }],
             counter_index: 0,
             counter_list: ListState::default().with_selected(Some(0))

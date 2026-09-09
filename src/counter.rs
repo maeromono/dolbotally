@@ -5,11 +5,11 @@ use ratatui::{
     Frame,
     layout::{Constraint, Layout, Rect},
     style::Stylize,
-    widgets::{Gauge, Paragraph},
+    widgets::{Block, Gauge, Paragraph},
 };
 use tui_big_text::{BigText, PixelSize};
 
-use crate::dt::DumbTallyApp;
+use crate::dt::{Counter, DumbTallyApp};
 
 pub fn render_counter(dt: &mut DumbTallyApp, frame: &mut Frame, area: Rect) {
     let Some(counter) = dt.counters.get(dt.counter_index) else {
@@ -23,26 +23,48 @@ pub fn render_counter(dt: &mut DumbTallyApp, frame: &mut Frame, area: Rect) {
     ])
     .split(area);
     let counter_name = Paragraph::new(format!("Current counter: {}", counter.name)).bold();
-    let counter_value = BigText::builder()
+    frame.render_widget(counter_name, counter_layout[0]);
+    render_value(
+        &counter,
+        frame,
+        counter_layout[1].centered_vertically(Constraint::Length(2)),
+    );
+    render_gauge(&counter, frame, counter_layout[2]);
+}
+
+fn render_value(counter: &Counter, frame: &mut Frame, area: Rect) {
+    let mut counter_value = BigText::builder()
         .centered()
         .pixel_size(PixelSize::Octant)
         .lines(vec![format!("{}", counter.value).into()])
         .build();
+    if counter.value >= counter.max_val {
+        counter_value.block = Some(Block::default().on_green().black());
+    } else if counter.value <= counter.min_val {
+        counter_value.block = Some(Block::default().on_red().black());
+    }
+    frame.render_widget(counter_value, area);
+}
+
+fn render_gauge(counter: &Counter, frame: &mut Frame, area: Rect) {
     let ratio = ((counter.value as f64 - counter.min_val as f64)
         / (counter.max_val as f64 - counter.min_val as f64))
         .clamp(0.0, 1.0);
     let counter_gauge = Gauge::default().ratio(ratio);
-    frame.render_widget(counter_name, counter_layout[0]);
-    frame.render_widget(counter_value, counter_layout[1].centered_vertically(Constraint::Length(2)));
     if area.width >= 50 {
-        let counter_gauge_layout = Layout::horizontal([Constraint::Fill(1),Constraint::Fill(1),Constraint::Fill(1)]).split(counter_layout[2]);
+        let counter_gauge_layout = Layout::horizontal([
+            Constraint::Fill(1),
+            Constraint::Fill(1),
+            Constraint::Fill(1),
+        ])
+        .split(area);
         let counter_gauge_minval = Paragraph::new(format!("{}", counter.min_val)).centered();
         let counter_gauge_maxval = Paragraph::new(format!("{}", counter.max_val)).centered();
         frame.render_widget(counter_gauge, counter_gauge_layout[1]);
         frame.render_widget(counter_gauge_minval, counter_gauge_layout[0]);
         frame.render_widget(counter_gauge_maxval, counter_gauge_layout[2]);
     } else {
-        frame.render_widget(counter_gauge, counter_layout[2]);
+        frame.render_widget(counter_gauge, area);
     }
 }
 
