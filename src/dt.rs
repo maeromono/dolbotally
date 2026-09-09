@@ -1,6 +1,6 @@
 use std::io::Result;
 
-use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
+use crossterm::event::{self, Event, KeyCode, KeyEventKind};
 use ratatui::{
     DefaultTerminal, Frame,
     layout::{Constraint, Layout},
@@ -8,7 +8,7 @@ use ratatui::{
     widgets::{ListState, Paragraph},
 };
 
-use crate::{counter::{self, render_counter}, header::render_header};
+use crate::{counter::{self, render_counter}, counterlist::{self, render_counter_list}, header::render_header};
 
 #[derive(Debug)]
 pub struct DumbTallyApp {
@@ -24,6 +24,13 @@ impl Default for DumbTallyApp {
             state: DumbTallyAppState::Main,
             counters: vec![Counter {
                 name: String::from("ass counter"),
+                value: 0,
+                pos_add: 10,
+                neg_add: 10,
+                min_val: -500,
+                max_val: 1000
+            }, Counter {
+                name: String::from("ass counter 2"),
                 value: 0,
                 pos_add: 10,
                 neg_add: 10,
@@ -50,6 +57,7 @@ pub struct Counter {
 pub enum DumbTallyAppState {
     Main,
     NewCounter,
+    CounterPick,
     Quit,
 }
 
@@ -58,7 +66,7 @@ impl DumbTallyApp {
         while self.state != DumbTallyAppState::Quit {
             term.draw(|frame| self.render(frame))?;
             match event::read()? {
-                Event::Key(key) if key.kind == KeyEventKind::Press => self.handle_keys(&key),
+                Event::Key(key) if key.kind == KeyEventKind::Press => self.handle_keys(&key.code),
                 Event::Resize(_, _) => {}
                 _ => {}
             }
@@ -86,16 +94,18 @@ impl DumbTallyApp {
             render_header(frame, main_layout[0]);
             match self.state {
                 DumbTallyAppState::Main => render_counter(self, frame, main_layout[1]),
+                DumbTallyAppState::CounterPick => render_counter_list(self, frame, main_layout[1]),
                 _ => todo!()
             }
         }
     }
 
-    fn handle_keys(&mut self, key: &KeyEvent) {
-        match key.code {
+    fn handle_keys(&mut self, key: &KeyCode) {
+        match key {
             KeyCode::Char('q') => self.state = DumbTallyAppState::Quit,
             _ => match self.state {
                 DumbTallyAppState::Main => counter::handle_keys(self, &key),
+                DumbTallyAppState::CounterPick => counterlist::handle_keys(self, &key),
                 _ => {}
             }
         }

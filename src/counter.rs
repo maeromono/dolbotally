@@ -1,6 +1,4 @@
-use std::fmt::format;
-
-use crossterm::event::{KeyCode, KeyEvent};
+use crossterm::event::KeyCode;
 use ratatui::{
     Frame,
     layout::{Constraint, Layout, Rect},
@@ -9,7 +7,7 @@ use ratatui::{
 };
 use tui_big_text::{BigText, PixelSize};
 
-use crate::dt::{Counter, DumbTallyApp};
+use crate::dt::{Counter, DumbTallyApp, DumbTallyAppState};
 
 pub fn render_counter(dt: &mut DumbTallyApp, frame: &mut Frame, area: Rect) {
     let Some(counter) = dt.counters.get(dt.counter_index) else {
@@ -68,10 +66,11 @@ fn render_gauge(counter: &Counter, frame: &mut Frame, area: Rect) {
     }
 }
 
-pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyEvent) {
-    match key.code {
+pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyCode) {
+    match key {
         KeyCode::Char('=') => increase_current_counter_val(dt),
         KeyCode::Char('-') => decrease_current_counter_val(dt),
+        KeyCode::Esc => dt.state = DumbTallyAppState::CounterPick,
         _ => {}
     }
 }
