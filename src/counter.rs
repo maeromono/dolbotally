@@ -1,3 +1,5 @@
+use std::fmt::format;
+
 use crossterm::event::{KeyCode, KeyEvent};
 use ratatui::{
     Frame,
@@ -17,7 +19,7 @@ pub fn render_counter(dt: &mut DumbTallyApp, frame: &mut Frame, area: Rect) {
     let counter_layout = Layout::vertical([
         Constraint::Length(1),
         Constraint::Fill(1),
-        Constraint::Fill(1),
+        Constraint::Length(1),
     ])
     .split(area);
     let counter_name = Paragraph::new(format!("Current counter: {}", counter.name)).bold();
@@ -31,8 +33,17 @@ pub fn render_counter(dt: &mut DumbTallyApp, frame: &mut Frame, area: Rect) {
         .clamp(0.0, 1.0);
     let counter_gauge = Gauge::default().ratio(ratio);
     frame.render_widget(counter_name, counter_layout[0]);
-    frame.render_widget(counter_value, counter_layout[1]);
-    frame.render_widget(counter_gauge, counter_layout[2]);
+    frame.render_widget(counter_value, counter_layout[1].centered_vertically(Constraint::Length(2)));
+    if area.width >= 50 {
+        let counter_gauge_layout = Layout::horizontal([Constraint::Fill(1),Constraint::Fill(1),Constraint::Fill(1)]).split(counter_layout[2]);
+        let counter_gauge_minval = Paragraph::new(format!("{}", counter.min_val)).centered();
+        let counter_gauge_maxval = Paragraph::new(format!("{}", counter.max_val)).centered();
+        frame.render_widget(counter_gauge, counter_gauge_layout[1]);
+        frame.render_widget(counter_gauge_minval, counter_gauge_layout[0]);
+        frame.render_widget(counter_gauge_maxval, counter_gauge_layout[2]);
+    } else {
+        frame.render_widget(counter_gauge, counter_layout[2]);
+    }
 }
 
 pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyEvent) {
