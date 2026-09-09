@@ -1,17 +1,27 @@
 use std::io::Result;
 
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
-use ratatui::{DefaultTerminal, Frame, layout::Constraint, style::Stylize, widgets::Paragraph};
+use ratatui::{
+    DefaultTerminal, Frame,
+    layout::{Constraint, Layout},
+    style::Stylize,
+    widgets::Paragraph,
+};
+
+use crate::header::render_header;
 
 #[derive(Debug)]
 pub struct DumbTallyApp {
     state: DumbTallyAppState,
-    counters: Vec<Counter>
+    counters: Vec<Counter>,
 }
 
 impl Default for DumbTallyApp {
     fn default() -> Self {
-        Self { state: DumbTallyAppState::Main, counters: vec![] }
+        Self {
+            state: DumbTallyAppState::Main,
+            counters: vec![],
+        }
     }
 }
 
@@ -53,9 +63,14 @@ impl DumbTallyApp {
             ))
             .red()
             .centered();
-            frame.render_widget(ttst, area.centered(Constraint::Length(15), Constraint::Length(3)));
+            frame.render_widget(
+                ttst,
+                area.centered(Constraint::Length(15), Constraint::Length(3)),
+            );
         } else {
-            println!("hello");
+            let main_layout = Layout::vertical([Constraint::Length(1), Constraint::Fill(1)])
+                .split(area.centered_horizontally(Constraint::Max(100)));
+            render_header(self, frame, main_layout[0]);
         }
     }
 
