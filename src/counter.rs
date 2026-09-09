@@ -25,15 +25,20 @@ pub fn render_counter(dt: &mut DumbTallyApp, frame: &mut Frame, area: Rect) {
     render_value(
         &counter,
         frame,
-        counter_layout[1].centered_vertically(Constraint::Length(2)),
+        counter_layout[1].centered_vertically(Constraint::Length(4)),
     );
     render_gauge(&counter, frame, counter_layout[2]);
 }
 
 fn render_value(counter: &Counter, frame: &mut Frame, area: Rect) {
+    let (pixel_size, constraint) = if area.width > 50 {
+        (PixelSize::HalfHeight, Constraint::Length(4))
+    } else {
+        (PixelSize::Octant, Constraint::Length(2))
+    };
     let mut counter_value = BigText::builder()
         .centered()
-        .pixel_size(PixelSize::Octant)
+        .pixel_size(pixel_size)
         .lines(vec![format!("{}", counter.value).into()])
         .build();
     if counter.value >= counter.max_val {
@@ -41,7 +46,7 @@ fn render_value(counter: &Counter, frame: &mut Frame, area: Rect) {
     } else if counter.value <= counter.min_val {
         counter_value.block = Some(Block::default().on_red().black());
     }
-    frame.render_widget(counter_value, area);
+    frame.render_widget(counter_value, area.centered_vertically(constraint));
 }
 
 fn render_gauge(counter: &Counter, frame: &mut Frame, area: Rect) {
