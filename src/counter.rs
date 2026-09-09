@@ -1,3 +1,4 @@
+use crossterm::event::{KeyCode, KeyEvent};
 use ratatui::{
     Frame,
     layout::{Constraint, Layout, Rect},
@@ -32,4 +33,26 @@ pub fn render_counter(dt: &mut DumbTallyApp, frame: &mut Frame, area: Rect) {
     frame.render_widget(counter_name, counter_layout[0]);
     frame.render_widget(counter_value, counter_layout[1]);
     frame.render_widget(counter_gauge, counter_layout[2]);
+}
+
+pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyEvent) {
+    match key.code {
+        KeyCode::Char('=') => increase_current_counter_val(dt),
+        KeyCode::Char('-') => decrease_current_counter_val(dt),
+        _ => {}
+    }
+}
+
+fn increase_current_counter_val(dt: &mut DumbTallyApp) {
+    let Some(counter) = dt.counters.get_mut(dt.counter_index) else {
+        return;
+    };
+    counter.value = (counter.value + counter.pos_add).clamp(counter.min_val, counter.max_val);
+}
+
+fn decrease_current_counter_val(dt: &mut DumbTallyApp) {
+    let Some(counter) = dt.counters.get_mut(dt.counter_index) else {
+        return;
+    };
+    counter.value = (counter.value - counter.neg_add).clamp(counter.min_val, counter.max_val);
 }

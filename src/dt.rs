@@ -8,7 +8,7 @@ use ratatui::{
     widgets::{ListState, Paragraph},
 };
 
-use crate::{counter::render_counter, header::render_header};
+use crate::{counter::{self, render_counter}, header::render_header};
 
 #[derive(Debug)]
 pub struct DumbTallyApp {
@@ -28,7 +28,7 @@ impl Default for DumbTallyApp {
                 pos_add: 10,
                 neg_add: 10,
                 min_val: -2000,
-                max_val: i64::MAX
+                max_val: 10000
             }],
             counter_index: 0,
             counter_list: ListState::default().with_selected(Some(0))
@@ -50,7 +50,6 @@ pub struct Counter {
 pub enum DumbTallyAppState {
     Main,
     NewCounter,
-    CounterAdd,
     Quit,
 }
 
@@ -95,7 +94,10 @@ impl DumbTallyApp {
     fn handle_keys(&mut self, key: &KeyEvent) {
         match key.code {
             KeyCode::Char('q') => self.state = DumbTallyAppState::Quit,
-            _ => {}
+            _ => match self.state {
+                DumbTallyAppState::Main => counter::handle_keys(self, &key),
+                _ => {}
+            }
         }
     }
 }
