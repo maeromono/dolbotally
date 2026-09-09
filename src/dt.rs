@@ -5,37 +5,51 @@ use ratatui::{
     DefaultTerminal, Frame,
     layout::{Constraint, Layout},
     style::Stylize,
-    widgets::Paragraph,
+    widgets::{ListState, Paragraph},
 };
 
-use crate::header::render_header;
+use crate::{counter::render_counter, header::render_header};
 
 #[derive(Debug)]
 pub struct DumbTallyApp {
-    state: DumbTallyAppState,
-    counters: Vec<Counter>,
+    pub state: DumbTallyAppState,
+    pub counters: Vec<Counter>,
+    pub counter_index: usize,
+    pub counter_list: ListState,
 }
 
 impl Default for DumbTallyApp {
     fn default() -> Self {
         Self {
             state: DumbTallyAppState::Main,
-            counters: vec![],
+            counters: vec![Counter {
+                name: String::from("ass counter"),
+                value: 0,
+                pos_add: 10,
+                neg_add: 10,
+                min_val: -2000,
+                max_val: i64::MAX
+            }],
+            counter_index: 0,
+            counter_list: ListState::default().with_selected(Some(0))
         }
     }
 }
 
 #[derive(Debug)]
 pub struct Counter {
-    name: String,
-    value: i64,
-    pos_add: i64,
-    neg_add: i64,
+    pub name: String,
+    pub value: i64,
+    pub pos_add: i64,
+    pub neg_add: i64,
+    pub min_val: i64,
+    pub max_val: i64,
 }
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum DumbTallyAppState {
     Main,
+    NewCounter,
     CounterAdd,
     Quit,
 }
@@ -70,7 +84,11 @@ impl DumbTallyApp {
         } else {
             let main_layout = Layout::vertical([Constraint::Length(1), Constraint::Fill(1)])
                 .split(area.centered_horizontally(Constraint::Max(100)));
-            render_header(self, frame, main_layout[0]);
+            render_header(frame, main_layout[0]);
+            match self.state {
+                DumbTallyAppState::Main => render_counter(self, frame, main_layout[1]),
+                _ => todo!()
+            }
         }
     }
 

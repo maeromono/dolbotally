@@ -2,7 +2,7 @@ use ratatui::run;
 
 use crate::dt::DumbTallyApp;
 
-mod counterlist;
+mod counter;
 mod dt;
 mod header;
 
