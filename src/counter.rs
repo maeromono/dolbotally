@@ -1,4 +1,4 @@
-use crossterm::event::KeyCode;
+use crossterm::event::{KeyCode, KeyEvent};
 use ratatui::{
     Frame,
     layout::{Constraint, Layout, Rect},
@@ -71,8 +71,8 @@ fn render_gauge(counter: &Counter, frame: &mut Frame, area: Rect) {
     }
 }
 
-pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyCode) {
-    match key {
+pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyEvent) {
+    match key.code {
         KeyCode::Char('=') => increase_current_counter_val(dt),
         KeyCode::Char('-') => decrease_current_counter_val(dt),
         KeyCode::Char('n') => dt.state = DumbTallyAppState::NewCounter,

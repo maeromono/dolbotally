@@ -1,6 +1,6 @@
 use std::io::Result;
 
-use crossterm::event::{self, Event, KeyCode, KeyEventKind};
+use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 use ratatui::{
     DefaultTerminal, Frame,
     layout::{Constraint, Layout},
@@ -8,7 +8,7 @@ use ratatui::{
     widgets::{ListState, Paragraph},
 };
 
-use crate::{counter::{self, render_counter}, counterlist::{self, render_counter_list}, header::render_header, newcounter::{NewCounter, render_countermake_screen}};
+use crate::{counter::{self, render_counter}, counterlist::{self, render_counter_list}, header::render_header, newcounter::{self, NewCounter, render_countermake_screen}};
 
 pub struct DumbTallyApp {
     pub state: DumbTallyAppState,
@@ -67,7 +67,7 @@ impl DumbTallyApp {
         while self.state != DumbTallyAppState::Quit {
             term.draw(|frame| self.render(frame))?;
             match event::read()? {
-                Event::Key(key) if key.kind == KeyEventKind::Press => self.handle_keys(&key.code),
+                Event::Key(key) if key.kind == KeyEventKind::Press => self.handle_keys(&key),
                 Event::Resize(_, _) => {}
                 _ => {}
             }
@@ -102,12 +102,13 @@ impl DumbTallyApp {
         }
     }
 
-    fn handle_keys(&mut self, key: &KeyCode) {
-        match key {
+    fn handle_keys(&mut self, key: &KeyEvent) {
+        match key.code {
             KeyCode::Char('q') => self.state = DumbTallyAppState::Quit,
             _ => match self.state {
-                DumbTallyAppState::Main => counter::handle_keys(self, &key),
-                DumbTallyAppState::CounterPick => counterlist::handle_keys(self, &key),
+                DumbTallyAppState::Main => counter::handle_keys(self, key),
+                DumbTallyAppState::CounterPick => counterlist::handle_keys(self, key),
+                DumbTallyAppState::NewCounter => newcounter::handle_keys(self, key),
                 _ => {}
             }
         }
