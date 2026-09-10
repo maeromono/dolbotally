@@ -1,6 +1,6 @@
 use crate::dt::{Counter, DumbTallyApp, DumbTallyAppState};
 use crossterm::event::{KeyCode, KeyEvent};
-use enum_iterator::{Sequence, next_cycle};
+use enum_iterator::{Sequence, next_cycle, previous_cycle};
 use ratatui::{
     Frame,
     layout::{Constraint, Direction, Layout, Rect},
@@ -96,6 +96,7 @@ pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyEvent) {
             reset_textareas(dt);
         }
         KeyCode::Tab => dt.new_counter.current_focus = next_cycle(&dt.new_counter.current_focus),
+        KeyCode::BackTab => dt.new_counter.current_focus = previous_cycle(&dt.new_counter.current_focus),
         KeyCode::Enter => create_new_counter(dt),
         _ => match dt.new_counter.current_focus {
             CurrentFocus::Name => if dt.new_counter.counter_name_textarea.input(*key) {},
