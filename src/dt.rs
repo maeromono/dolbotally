@@ -1,6 +1,6 @@
 use std::io::Result;
 
-use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
+use crossterm::event::{self, Event, KeyEvent, KeyEventKind};
 use ratatui::{
     DefaultTerminal, Frame,
     layout::{Constraint, Layout},
@@ -103,14 +103,11 @@ impl DumbTallyApp {
     }
 
     fn handle_keys(&mut self, key: &KeyEvent) {
-        match key.code {
-            KeyCode::Char('q') => self.state = DumbTallyAppState::Quit,
-            _ => match self.state {
-                DumbTallyAppState::Main => counter::handle_keys(self, key),
-                DumbTallyAppState::CounterPick => counterlist::handle_keys(self, key),
-                DumbTallyAppState::NewCounter => newcounter::handle_keys(self, key),
-                _ => {}
-            }
+        match self.state {
+            DumbTallyAppState::Main => counter::handle_keys(self, key),
+            DumbTallyAppState::CounterPick => counterlist::handle_keys(self, key),
+            DumbTallyAppState::NewCounter => newcounter::handle_keys(self, key),
+            _ => {}
         }
     }
 }

@@ -23,6 +23,7 @@ pub fn render_counter_list(dt: &mut DumbTallyApp, frame: &mut Frame, area: Rect)
 
 pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyEvent) {
     match key.code {
+        KeyCode::Char('q') => dt.state = DumbTallyAppState::Quit,
         KeyCode::Esc => dt.state = DumbTallyAppState::Main,
         KeyCode::Char('j') | KeyCode::Down => dt.counter_list.select_next(),
         KeyCode::Char('k') | KeyCode::Up => dt.counter_list.select_previous(),
