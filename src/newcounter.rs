@@ -36,10 +36,22 @@ pub fn render_countermake_screen(dt: &mut DumbTallyApp, frame: &mut Frame, area:
     let newcounter_layout = Layout::vertical([Constraint::Length(2); 5])
         .split(area.centered_vertically(Constraint::Max(10)));
     frame.render_widget(&dt.new_counter.counter_name_textarea, newcounter_layout[0]);
-    frame.render_widget(&dt.new_counter.counter_posadd_textarea, newcounter_layout[1]);
-    frame.render_widget(&dt.new_counter.counter_negadd_textarea, newcounter_layout[2]);
-    frame.render_widget(&dt.new_counter.counter_minval_textarea, newcounter_layout[3]);
-    frame.render_widget(&dt.new_counter.counter_maxval_textarea, newcounter_layout[4]);
+    frame.render_widget(
+        &dt.new_counter.counter_posadd_textarea,
+        newcounter_layout[1],
+    );
+    frame.render_widget(
+        &dt.new_counter.counter_negadd_textarea,
+        newcounter_layout[2],
+    );
+    frame.render_widget(
+        &dt.new_counter.counter_minval_textarea,
+        newcounter_layout[3],
+    );
+    frame.render_widget(
+        &dt.new_counter.counter_maxval_textarea,
+        newcounter_layout[4],
+    );
 }
 
 pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyEvent) {
@@ -100,18 +112,19 @@ fn create_new_counter(dt: &mut DumbTallyApp) {
         && dt.new_counter.counter_minval_valid
         && dt.new_counter.counter_maxval_valid
     {
+        let min_val = dt.new_counter.counter_minval_textarea.lines()[0]
+            .parse()
+            .unwrap();
         dt.counters.push(Counter {
             name: dt.new_counter.counter_name_textarea.lines()[0].clone(),
-            value: 0,
+            value: if min_val > 0 { min_val } else { 0 },
             pos_add: dt.new_counter.counter_posadd_textarea.lines()[0]
                 .parse()
                 .unwrap(),
             neg_add: dt.new_counter.counter_negadd_textarea.lines()[0]
                 .parse()
                 .unwrap(),
-            min_val: dt.new_counter.counter_minval_textarea.lines()[0]
-                .parse()
-                .unwrap(),
+            min_val,
             max_val: dt.new_counter.counter_maxval_textarea.lines()[0]
                 .parse()
                 .unwrap(),
