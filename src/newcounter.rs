@@ -3,8 +3,9 @@ use crossterm::event::{KeyCode, KeyEvent};
 use enum_iterator::{Sequence, next_cycle};
 use ratatui::{
     Frame,
-    layout::{Constraint, Layout, Rect},
+    layout::{Constraint, Direction, Layout, Rect},
     style::{Color, Style},
+    widgets::Paragraph,
 };
 use ratatui_textarea::TextArea;
 
@@ -35,22 +36,39 @@ pub enum CurrentFocus {
 pub fn render_countermake_screen(dt: &mut DumbTallyApp, frame: &mut Frame, area: Rect) {
     let newcounter_layout = Layout::vertical([Constraint::Length(2); 5])
         .split(area.centered_vertically(Constraint::Max(10)));
-    frame.render_widget(&dt.new_counter.counter_name_textarea, newcounter_layout[0]);
+    let field_layout = Layout::default()
+        .direction(if area.width > 50 {
+            Direction::Horizontal
+        } else {
+            Direction::Vertical
+        })
+        .constraints([Constraint::Fill(1), Constraint::Fill(2)]);
+    let name_field_layout = field_layout.clone().split(newcounter_layout[0]);
+    let posadd_field_layout = field_layout.clone().split(newcounter_layout[1]);
+    let negadd_field_layout = field_layout.clone().split(newcounter_layout[2]);
+    let minval_field_layout = field_layout.clone().split(newcounter_layout[3]);
+    let maxval_field_layout = field_layout.clone().split(newcounter_layout[4]);
+    frame.render_widget(Paragraph::new("Counter name"), name_field_layout[0]);
+    frame.render_widget(&dt.new_counter.counter_name_textarea, name_field_layout[1]);
+    frame.render_widget(Paragraph::new("Addition amount"), posadd_field_layout[0]);
     frame.render_widget(
         &dt.new_counter.counter_posadd_textarea,
-        newcounter_layout[1],
+        posadd_field_layout[1],
     );
+    frame.render_widget(Paragraph::new("Subtraction amount"), negadd_field_layout[0]);
     frame.render_widget(
         &dt.new_counter.counter_negadd_textarea,
-        newcounter_layout[2],
+        negadd_field_layout[1],
     );
+    frame.render_widget(Paragraph::new("Min. value"), minval_field_layout[0]);
     frame.render_widget(
         &dt.new_counter.counter_minval_textarea,
-        newcounter_layout[3],
+        minval_field_layout[1],
     );
+    frame.render_widget(Paragraph::new("Max. value"), maxval_field_layout[0]);
     frame.render_widget(
         &dt.new_counter.counter_maxval_textarea,
-        newcounter_layout[4],
+        maxval_field_layout[1],
     );
 }
 
