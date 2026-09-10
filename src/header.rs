@@ -1,4 +1,9 @@
-use ratatui::{Frame, layout::{Constraint, Layout, Rect}, style::Stylize, widgets::Paragraph};
+use ratatui::{
+    Frame,
+    layout::{Constraint, Layout, Rect},
+    style::Stylize,
+    widgets::Paragraph,
+};
 
 pub fn render_header(frame: &mut Frame, area: Rect) {
     let header = Layout::horizontal([Constraint::Length(18), Constraint::Fill(2)]).split(area);

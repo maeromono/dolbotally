@@ -8,7 +8,12 @@ use ratatui::{
     widgets::{ListState, Paragraph},
 };
 
-use crate::{counter::{self, render_counter}, counterlist::{self, render_counter_list}, header::render_header, newcounter::{self, NewCounter, render_countermake_screen}};
+use crate::{
+    counter::{self, render_counter},
+    counterlist::{self, render_counter_list},
+    header::render_header,
+    newcounter::{self, NewCounter, render_countermake_screen},
+};
 
 pub struct DumbTallyApp {
     pub state: DumbTallyAppState,
@@ -22,24 +27,27 @@ impl Default for DumbTallyApp {
     fn default() -> Self {
         Self {
             state: DumbTallyAppState::Main,
-            counters: vec![Counter {
-                name: String::from("test #1"),
-                value: 0,
-                pos_add: 10,
-                neg_add: 10,
-                min_val: -500,
-                max_val: 1000
-            }, Counter {
-                name: String::from("test #2"),
-                value: 0,
-                pos_add: 10,
-                neg_add: 10,
-                min_val: -500,
-                max_val: 1000
-            }],
+            counters: vec![
+                Counter {
+                    name: String::from("test #1"),
+                    value: 0,
+                    pos_add: 10,
+                    neg_add: 10,
+                    min_val: -500,
+                    max_val: 1000,
+                },
+                Counter {
+                    name: String::from("test #2"),
+                    value: 0,
+                    pos_add: 10,
+                    neg_add: 10,
+                    min_val: -500,
+                    max_val: 1000,
+                },
+            ],
             counter_index: 0,
             counter_list: ListState::default().with_selected(Some(0)),
-            new_counter: NewCounter::default()
+            new_counter: NewCounter::default(),
         }
     }
 }
@@ -96,8 +104,10 @@ impl DumbTallyApp {
             match self.state {
                 DumbTallyAppState::Main => render_counter(self, frame, main_layout[1]),
                 DumbTallyAppState::CounterPick => render_counter_list(self, frame, main_layout[1]),
-                DumbTallyAppState::NewCounter => render_countermake_screen(self, frame, main_layout[1]),
-                _ => todo!()
+                DumbTallyAppState::NewCounter => {
+                    render_countermake_screen(self, frame, main_layout[1])
+                }
+                _ => todo!(),
             }
         }
     }

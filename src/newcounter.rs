@@ -3,7 +3,7 @@ use crossterm::event::{KeyCode, KeyEvent};
 use enum_iterator::{Sequence, next_cycle};
 use ratatui::{
     Frame,
-    layout::{Constraint, Direction, Layout, Rect},
+    layout::{Constraint, Layout, Rect},
     style::{Color, Style},
 };
 use ratatui_textarea::TextArea;
@@ -96,7 +96,7 @@ pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyEvent) {
 }
 
 fn validate_ints(textarea: &mut TextArea) -> bool {
-    if let Err(err) = textarea.lines()[0].parse::<i64>() {
+    if let Err(_err) = textarea.lines()[0].parse::<i64>() {
         textarea.set_style(Style::default().fg(Color::Black).bg(Color::Red));
         false
     } else {
