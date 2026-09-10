@@ -7,17 +7,18 @@ use ratatui::{
     style::Stylize,
     widgets::{ListState, Paragraph},
 };
+use serde::{Deserialize, Serialize};
 
 use crate::{
     counter::{self, render_counter},
     counterlist::{self, render_counter_list},
     header::render_header,
-    newcounter::{self, NewCounter, render_countermake_screen},
+    newcounter::{self, NewCounter, render_countermake_screen}, save::{DolbotallyCounters, save_counters},
 };
 
 pub struct DumbTallyApp {
     pub state: DumbTallyAppState,
-    pub counters: Vec<Counter>,
+    pub counters: DolbotallyCounters,
     pub counter_index: usize,
     pub counter_list: ListState,
     pub new_counter: NewCounter,
@@ -27,24 +28,7 @@ impl Default for DumbTallyApp {
     fn default() -> Self {
         Self {
             state: DumbTallyAppState::Main,
-            counters: vec![
-                Counter {
-                    name: String::from("test #1"),
-                    value: 0,
-                    pos_add: 10,
-                    neg_add: 10,
-                    min_val: -500,
-                    max_val: 1000,
-                },
-                Counter {
-                    name: String::from("test #2"),
-                    value: 0,
-                    pos_add: 10,
-                    neg_add: 10,
-                    min_val: -500,
-                    max_val: 1000,
-                },
-            ],
+            counters: DolbotallyCounters::default(),
             counter_index: 0,
             counter_list: ListState::default().with_selected(Some(0)),
             new_counter: NewCounter::default(),
@@ -52,7 +36,7 @@ impl Default for DumbTallyApp {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Counter {
     pub name: String,
     pub value: i64,
@@ -80,6 +64,7 @@ impl DumbTallyApp {
                 _ => {}
             }
         }
+        self.save();
         Ok(())
     }
 
@@ -95,7 +80,7 @@ impl DumbTallyApp {
             .centered();
             frame.render_widget(
                 ttst,
-                area.centered(Constraint::Length(15), Constraint::Length(3)),
+                area.centered(Constraint::Length(18), Constraint::Length(3)),
             );
         } else {
             let main_layout = Layout::vertical([Constraint::Length(1), Constraint::Fill(1)])
@@ -118,6 +103,12 @@ impl DumbTallyApp {
             DumbTallyAppState::CounterPick => counterlist::handle_keys(self, key),
             DumbTallyAppState::NewCounter => newcounter::handle_keys(self, key),
             _ => {}
+        }
+    }
+
+    pub fn save(&self) {
+        if let Err(err) = save_counters(&self.counters) {
+            eprintln!("!! Failed to save counters. Details: {}", err);
         }
     }
 }

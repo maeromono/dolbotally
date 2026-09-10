@@ -10,7 +10,7 @@ use tui_big_text::{BigText, PixelSize};
 use crate::dt::{Counter, DumbTallyApp, DumbTallyAppState};
 
 pub fn render_counter(dt: &mut DumbTallyApp, frame: &mut Frame, area: Rect) {
-    let Some(counter) = dt.counters.get(dt.counter_index) else {
+    let Some(counter) = dt.counters.counters.get(dt.counter_index) else {
         frame.render_widget(Paragraph::new("No counter"), area);
         return;
     };
@@ -83,14 +83,14 @@ pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyEvent) {
 }
 
 fn increase_current_counter_val(dt: &mut DumbTallyApp) {
-    let Some(counter) = dt.counters.get_mut(dt.counter_index) else {
+    let Some(counter) = dt.counters.counters.get_mut(dt.counter_index) else {
         return;
     };
     counter.value = (counter.value + counter.pos_add).clamp(counter.min_val, counter.max_val);
 }
 
 fn decrease_current_counter_val(dt: &mut DumbTallyApp) {
-    let Some(counter) = dt.counters.get_mut(dt.counter_index) else {
+    let Some(counter) = dt.counters.counters.get_mut(dt.counter_index) else {
         return;
     };
     counter.value = (counter.value - counter.neg_add).clamp(counter.min_val, counter.max_val);

@@ -115,7 +115,7 @@ fn create_new_counter(dt: &mut DumbTallyApp) {
         let min_val = dt.new_counter.counter_minval_textarea.lines()[0]
             .parse()
             .unwrap();
-        dt.counters.push(Counter {
+        dt.counters.counters.push(Counter {
             name: dt.new_counter.counter_name_textarea.lines()[0].clone(),
             value: if min_val > 0 { min_val } else { 0 },
             pos_add: dt.new_counter.counter_posadd_textarea.lines()[0]
@@ -129,6 +129,7 @@ fn create_new_counter(dt: &mut DumbTallyApp) {
                 .parse()
                 .unwrap(),
         });
+        dt.save();
         reset_textareas(dt);
         dt.state = DumbTallyAppState::Main;
     }

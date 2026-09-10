@@ -10,7 +10,7 @@ use crate::dt::{DumbTallyApp, DumbTallyAppState};
 
 pub fn render_counter_list(dt: &mut DumbTallyApp, frame: &mut Frame, area: Rect) {
     let mut counter_list: Vec<String> = vec![];
-    for counter in &dt.counters {
+    for counter in &dt.counters.counters {
         counter_list.push(format!("[{}] {}", counter.value, counter.name));
     }
     let list = List::new(counter_list).highlight_style(Modifier::REVERSED);

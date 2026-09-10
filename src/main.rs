@@ -2,17 +2,23 @@ use std::process::exit;
 
 use ratatui::run;
 
-use crate::dt::DumbTallyApp;
+use crate::{dt::{DumbTallyApp, DumbTallyAppState}, save::load_counters};
 
 mod counter;
 mod counterlist;
 mod dt;
 mod header;
 mod newcounter;
+mod save;
 
 fn main() {
-    if let Err(err) = run(|term| DumbTallyApp::default().run(term)) {
-        eprintln!("Terminal error: {}", err);
+    let mut dt = DumbTallyApp::default();
+    dt.counters = load_counters().unwrap_or_default();
+    if dt.counters.counters.iter().count() == 0 {
+        dt.state = DumbTallyAppState::NewCounter;
+    }
+    if let Err(err) = run(|term| dt.run(term)) {
+        eprintln!("!! Terminal error: {}", err);
         exit(1);
     }
 }
