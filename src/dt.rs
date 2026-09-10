@@ -12,8 +12,9 @@ use serde::{Deserialize, Serialize};
 use crate::{
     counter::{self, render_counter},
     counterlist::{self, render_counter_list},
-    header::render_header,
-    newcounter::{self, NewCounter, render_countermake_screen}, save::{DolbotallyCounters, save_counters},
+    dtmain::{render_footer, render_header},
+    newcounter::{self, NewCounter, render_countermake_screen},
+    save::{DolbotallyCounters, save_counters},
 };
 
 pub struct DumbTallyApp {
@@ -83,9 +84,14 @@ impl DumbTallyApp {
                 area.centered(Constraint::Length(18), Constraint::Length(3)),
             );
         } else {
-            let main_layout = Layout::vertical([Constraint::Length(1), Constraint::Fill(1)])
-                .split(area.centered_horizontally(Constraint::Max(100)));
+            let main_layout = Layout::vertical([
+                Constraint::Length(1),
+                Constraint::Fill(1),
+                Constraint::Length(1),
+            ])
+            .split(area.centered_horizontally(Constraint::Max(100)));
             render_header(frame, main_layout[0]);
+            render_footer(&self, frame, main_layout[2]);
             match self.state {
                 DumbTallyAppState::Main => render_counter(self, frame, main_layout[1]),
                 DumbTallyAppState::CounterPick => render_counter_list(self, frame, main_layout[1]),

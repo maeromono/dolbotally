@@ -7,7 +7,7 @@ use crate::{dt::{DumbTallyApp, DumbTallyAppState}, save::load_counters};
 mod counter;
 mod counterlist;
 mod dt;
-mod header;
+mod dtmain;
 mod newcounter;
 mod save;
 
