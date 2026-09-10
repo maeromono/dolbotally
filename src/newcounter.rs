@@ -34,38 +34,55 @@ pub enum CurrentFocus {
 }
 
 pub fn render_countermake_screen(dt: &mut DumbTallyApp, frame: &mut Frame, area: Rect) {
-    let newcounter_layout = Layout::vertical([Constraint::Length(2); 5])
-        .split(area.centered_vertically(Constraint::Max(10)));
+    let (direction, vert_constraint) = if area.width > 50 {
+        (Direction::Horizontal, Constraint::Length(1))
+    } else {
+        (Direction::Vertical, Constraint::Length(2))
+    };
+    let newcounter_layout =
+        Layout::vertical([vert_constraint; 5]).split(area.centered_vertically(Constraint::Max(10)));
     let field_layout = Layout::default()
-        .direction(if area.width > 50 {
-            Direction::Horizontal
-        } else {
-            Direction::Vertical
-        })
+        .direction(direction)
         .constraints([Constraint::Fill(1), Constraint::Fill(2)]);
     let name_field_layout = field_layout.clone().split(newcounter_layout[0]);
     let posadd_field_layout = field_layout.clone().split(newcounter_layout[1]);
     let negadd_field_layout = field_layout.clone().split(newcounter_layout[2]);
     let minval_field_layout = field_layout.clone().split(newcounter_layout[3]);
     let maxval_field_layout = field_layout.clone().split(newcounter_layout[4]);
-    frame.render_widget(Paragraph::new("Counter name"), name_field_layout[0]);
+    let focus = &dt.new_counter.current_focus;
+    frame.render_widget(
+        Paragraph::new("Counter name").style(focus_highlight(matches!(focus, CurrentFocus::Name))),
+        name_field_layout[0],
+    );
     frame.render_widget(&dt.new_counter.counter_name_textarea, name_field_layout[1]);
-    frame.render_widget(Paragraph::new("Addition amount"), posadd_field_layout[0]);
+    frame.render_widget(
+        Paragraph::new("Add amount").style(focus_highlight(matches!(focus, CurrentFocus::PosAdd))),
+        posadd_field_layout[0],
+    );
     frame.render_widget(
         &dt.new_counter.counter_posadd_textarea,
         posadd_field_layout[1],
     );
-    frame.render_widget(Paragraph::new("Subtraction amount"), negadd_field_layout[0]);
+    frame.render_widget(
+        Paragraph::new("Sub amount").style(focus_highlight(matches!(focus, CurrentFocus::NegAdd))),
+        negadd_field_layout[0],
+    );
     frame.render_widget(
         &dt.new_counter.counter_negadd_textarea,
         negadd_field_layout[1],
     );
-    frame.render_widget(Paragraph::new("Min. value"), minval_field_layout[0]);
+    frame.render_widget(
+        Paragraph::new("Min. value").style(focus_highlight(matches!(focus, CurrentFocus::MinVal))),
+        minval_field_layout[0],
+    );
     frame.render_widget(
         &dt.new_counter.counter_minval_textarea,
         minval_field_layout[1],
     );
-    frame.render_widget(Paragraph::new("Max. value"), maxval_field_layout[0]);
+    frame.render_widget(
+        Paragraph::new("Max. value").style(focus_highlight(matches!(focus, CurrentFocus::MaxVal))),
+        maxval_field_layout[0],
+    );
     frame.render_widget(
         &dt.new_counter.counter_maxval_textarea,
         maxval_field_layout[1],
@@ -73,9 +90,6 @@ pub fn render_countermake_screen(dt: &mut DumbTallyApp, frame: &mut Frame, area:
 }
 
 pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyEvent) {
-    // if dt.new_counter.counter_name_textarea.input_without_shortcuts(*key) {
-    //
-    // }
     match key.code {
         KeyCode::Esc => {
             dt.state = DumbTallyAppState::Main;
@@ -110,6 +124,14 @@ pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyEvent) {
                 }
             }
         },
+    }
+}
+
+fn focus_highlight(focused: bool) -> Style {
+    if focused {
+        Style::default().bold().reversed()
+    } else {
+        Style::default()
     }
 }
 
