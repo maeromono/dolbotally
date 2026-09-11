@@ -55,12 +55,7 @@ fn render_gauge(counter: &Counter, frame: &mut Frame, area: Rect) {
         .clamp(0.0, 1.0);
     let counter_gauge = Gauge::default().ratio(ratio);
     if area.width >= 50 {
-        let counter_gauge_layout = Layout::horizontal([
-            Constraint::Fill(1),
-            Constraint::Fill(1),
-            Constraint::Fill(1),
-        ])
-        .split(area);
+        let counter_gauge_layout = Layout::horizontal([Constraint::Fill(1); 3]).split(area);
         let counter_gauge_minval = Paragraph::new(format!("{}", counter.min_val)).centered();
         let counter_gauge_maxval = Paragraph::new(format!("{}", counter.max_val)).centered();
         frame.render_widget(counter_gauge, counter_gauge_layout[1]);
