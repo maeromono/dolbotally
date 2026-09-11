@@ -74,24 +74,44 @@ fn render_gauge(counter: &Counter, frame: &mut Frame, area: Rect) {
 pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyEvent) {
     match key.code {
         KeyCode::Char('q') => dt.state = DumbTallyAppState::Quit,
-        KeyCode::Char('=') => increase_current_counter_val(dt),
-        KeyCode::Char('-') => decrease_current_counter_val(dt),
+        KeyCode::Char('=') => change_current_counter_val(dt, ChangeCounterValue::Increase),
+        KeyCode::Char('-') => change_current_counter_val(dt, ChangeCounterValue::Decrease),
+        KeyCode::Char('g') => change_current_counter_val(dt, ChangeCounterValue::Min),
+        KeyCode::Char('G') => change_current_counter_val(dt, ChangeCounterValue::Max),
+        KeyCode::Char('r') => change_current_counter_val(dt, ChangeCounterValue::Reset),
         KeyCode::Char('n') => dt.state = DumbTallyAppState::NewCounter,
         KeyCode::Esc => dt.state = DumbTallyAppState::CounterPick,
         _ => {}
     }
 }
 
-fn increase_current_counter_val(dt: &mut DumbTallyApp) {
+fn change_current_counter_val(dt: &mut DumbTallyApp, change: ChangeCounterValue) {
     let Some(counter) = dt.counters.counters.get_mut(dt.counters.counter_index) else {
         return;
     };
-    counter.value = (counter.value + counter.pos_add).clamp(counter.min_val, counter.max_val);
+    counter.value = match change {
+        ChangeCounterValue::Increase => {
+            (counter.value + counter.pos_add).clamp(counter.min_val, counter.max_val)
+        }
+        ChangeCounterValue::Decrease => {
+            (counter.value - counter.pos_add).clamp(counter.min_val, counter.max_val)
+        }
+        ChangeCounterValue::Min => counter.min_val,
+        ChangeCounterValue::Max => counter.max_val,
+        ChangeCounterValue::Reset => {
+            if counter.min_val > 0 {
+                counter.min_val
+            } else {
+                0
+            }
+        }
+    }
 }
 
-fn decrease_current_counter_val(dt: &mut DumbTallyApp) {
-    let Some(counter) = dt.counters.counters.get_mut(dt.counters.counter_index) else {
-        return;
-    };
-    counter.value = (counter.value - counter.neg_add).clamp(counter.min_val, counter.max_val);
+enum ChangeCounterValue {
+    Increase,
+    Decrease,
+    Min,
+    Max,
+    Reset,
 }
