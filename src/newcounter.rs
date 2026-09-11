@@ -39,8 +39,8 @@ pub fn render_countermake_screen(dt: &mut DumbTallyApp, frame: &mut Frame, area:
     } else {
         (Direction::Vertical, Constraint::Length(2))
     };
-    let newcounter_layout =
-        Layout::vertical([vert_constraint; 5]).split(area.centered_vertically(Constraint::Max(10)));
+    let newcounter_layout = Layout::vertical([vert_constraint; 5])
+        .split(area.centered(Constraint::Max(75), Constraint::Percentage(30)));
     let field_layout = Layout::default()
         .direction(direction)
         .constraints([Constraint::Fill(1), Constraint::Fill(2)]);
@@ -96,7 +96,9 @@ pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyEvent) {
             reset_textareas(dt);
         }
         KeyCode::Tab => dt.new_counter.current_focus = next_cycle(&dt.new_counter.current_focus),
-        KeyCode::BackTab => dt.new_counter.current_focus = previous_cycle(&dt.new_counter.current_focus),
+        KeyCode::BackTab => {
+            dt.new_counter.current_focus = previous_cycle(&dt.new_counter.current_focus)
+        }
         KeyCode::Enter => create_new_counter(dt),
         _ => match dt.new_counter.current_focus {
             CurrentFocus::Name => if dt.new_counter.counter_name_textarea.input(*key) {},
