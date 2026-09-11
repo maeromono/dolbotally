@@ -14,20 +14,20 @@ pub fn render_counter(dt: &mut DumbTallyApp, frame: &mut Frame, area: Rect) {
         frame.render_widget(Paragraph::new("No counter at this index.\nIt's likely that it was removed.\nHit Esc to pick another one.").bold().red(), area);
         return;
     };
+    if dt.cached_counter_name != counter.name {
+        dt.cached_counter_name = counter.name.clone();
+    }
     let counter_layout = Layout::vertical([
-        Constraint::Length(1),
         Constraint::Fill(1),
         Constraint::Length(1),
     ])
     .split(area);
-    let counter_name = Paragraph::new(format!("Current counter: {}", counter.name)).bold();
-    frame.render_widget(counter_name, counter_layout[0]);
     render_value(
         &counter,
         frame,
-        counter_layout[1].centered_vertically(Constraint::Max(8)),
+        counter_layout[0].centered_vertically(Constraint::Max(8)),
     );
-    render_gauge(&counter, frame, counter_layout[2]);
+    render_gauge(&counter, frame, counter_layout[1]);
 }
 
 fn render_value(counter: &Counter, frame: &mut Frame, area: Rect) {

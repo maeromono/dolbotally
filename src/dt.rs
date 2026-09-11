@@ -22,6 +22,7 @@ pub struct DumbTallyApp {
     pub counters: DolbotallyCounters,
     pub counter_list: ListState,
     pub new_counter: NewCounter,
+    pub cached_counter_name: String,
 }
 
 impl Default for DumbTallyApp {
@@ -31,6 +32,7 @@ impl Default for DumbTallyApp {
             counters: DolbotallyCounters::default(),
             counter_list: ListState::default().with_selected(Some(0)),
             new_counter: NewCounter::default(),
+            cached_counter_name: String::from("No counter")
         }
     }
 }
@@ -88,16 +90,16 @@ impl DumbTallyApp {
                 Constraint::Length(1),
             ])
             .split(area.centered_horizontally(Constraint::Max(100)));
-            render_header(frame, main_layout[0]);
-            render_footer(&self, frame, main_layout[2]);
             match self.state {
                 DumbTallyAppState::Main => render_counter(self, frame, main_layout[1]),
                 DumbTallyAppState::CounterPick => render_counter_list(self, frame, main_layout[1]),
                 DumbTallyAppState::NewCounter => {
                     render_countermake_screen(self, frame, main_layout[1])
                 }
-                _ => todo!(),
+                _ => {},
             }
+            render_header(&self, frame, main_layout[0]);
+            render_footer(&self, frame, main_layout[2]);
         }
     }
 

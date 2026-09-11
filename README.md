@@ -17,11 +17,11 @@ Prerequisites:
 ```
 
 ## Roadmap.
+- [X] Bigger font on smaller numbers
+- [X] Allow jumping to minimum and maximum value
 - [ ] Editing & deleting counters within the TUI
-- [ ] Bigger font on smaller numbers
 - [ ] Defaults pre-filled in the new counter screen
 - [ ] Visual feedback on counter name validation
-- [ ] Allow jumping to minimum and maximum value
 - [ ] ???
 
 ## License.
