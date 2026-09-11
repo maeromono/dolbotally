@@ -21,6 +21,7 @@ Prerequisites:
 - [ ] Bigger font on smaller numbers
 - [ ] Defaults pre-filled in the new counter screen
 - [ ] Visual feedback on counter name validation
+- [ ] Allow jumping to minimum and maximum value
 - [ ] ???
 
 ## License.
