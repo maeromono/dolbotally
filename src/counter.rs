@@ -11,7 +11,7 @@ use crate::dt::{Counter, DumbTallyApp, DumbTallyAppState};
 
 pub fn render_counter(dt: &mut DumbTallyApp, frame: &mut Frame, area: Rect) {
     let Some(counter) = dt.counters.counters.get(dt.counters.counter_index) else {
-        frame.render_widget(Paragraph::new("No counter"), area);
+        frame.render_widget(Paragraph::new("No counter at this index.\nIt's likely that it was removed.\nHit Esc to pick another one.").bold().red(), area);
         return;
     };
     let counter_layout = Layout::vertical([
