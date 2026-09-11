@@ -1,7 +1,15 @@
 [package]
 name = "dolbotally"
 version = "0.1.0"
+authors = ["EnmakaiDev"]
 edition = "2024"
+license = "GPL-3.0"
+description = "Frankly simplish multi-tally counter."
+repository = "https://codeberg.org/enmkdev/dolbotally"
+homepage = "https://enmkdev.neocities.org/projects/dolbotally/"
+readme = "README.md"
+keywords = ["tui", "tally", "counter"]
+categories = ["command-line-interface", "command-line-utilities"]
 
 [dependencies]
 crossterm = "0.29.0"
