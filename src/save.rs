@@ -9,12 +9,14 @@ use crate::dt::Counter;
 #[derive(Serialize, Deserialize)]
 pub struct DolbotallyCounters {
     pub counters: Vec<Counter>,
+    pub counter_index: usize,
 }
 
 impl Default for DolbotallyCounters {
     fn default() -> Self {
         Self {
-            counters: vec![]
+            counters: vec![],
+            counter_index: 0
         }
     }
 }
@@ -31,7 +33,7 @@ pub fn save_counters(counters: &DolbotallyCounters) -> Result<()> {
         create_dir_all(parent)?;
     }
     let contents = to_string(counters).map_err(|err| Error::new(ErrorKind::InvalidData, err))?;
-    let tmp_path = path.with_extension(".tmp");
+    let tmp_path = path.with_extension("tmp");
     let mut tmp = File::create(&tmp_path)?;
     tmp.write_all(contents.as_bytes())?;
     tmp.sync_all()?;
@@ -49,7 +51,7 @@ pub fn load_counters() -> Result<DolbotallyCounters> {
     match from_str(&contents) {
         Ok(counters) => Ok(counters),
         Err(err) => {
-            let _ = rename(&path, &path.with_extension(".corrupt"));
+            let _ = rename(&path, &path.with_extension("corrupt"));
             Err(Error::new(ErrorKind::InvalidData, err))
         }
     }

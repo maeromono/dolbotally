@@ -20,7 +20,6 @@ use crate::{
 pub struct DumbTallyApp {
     pub state: DumbTallyAppState,
     pub counters: DolbotallyCounters,
-    pub counter_index: usize,
     pub counter_list: ListState,
     pub new_counter: NewCounter,
 }
@@ -30,7 +29,6 @@ impl Default for DumbTallyApp {
         Self {
             state: DumbTallyAppState::Main,
             counters: DolbotallyCounters::default(),
-            counter_index: 0,
             counter_list: ListState::default().with_selected(Some(0)),
             new_counter: NewCounter::default(),
         }

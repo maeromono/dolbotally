@@ -28,7 +28,7 @@ pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyEvent) {
         KeyCode::Char('j') | KeyCode::Down => dt.counter_list.select_next(),
         KeyCode::Char('k') | KeyCode::Up => dt.counter_list.select_previous(),
         KeyCode::Enter | KeyCode::Char(' ') => {
-            dt.counter_index = dt.counter_list.selected().unwrap_or_default();
+            dt.counters.counter_index = dt.counter_list.selected().unwrap_or_default();
             dt.state = DumbTallyAppState::Main;
         }
         _ => {}
