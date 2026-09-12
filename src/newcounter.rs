@@ -16,6 +16,7 @@ pub struct NewCounter {
     counter_negadd_textarea: TextArea<'static>,
     counter_minval_textarea: TextArea<'static>,
     counter_maxval_textarea: TextArea<'static>,
+    counter_name_valid: bool,
     counter_posadd_valid: bool,
     counter_negadd_valid: bool,
     counter_minval_valid: bool,
@@ -31,6 +32,7 @@ impl Default for NewCounter {
             counter_negadd_textarea: TextArea::new(vec![String::from('1')]),
             counter_minval_textarea: TextArea::new(vec![String::from('0')]),
             counter_maxval_textarea: TextArea::new(vec![String::from("50")]),
+            counter_name_valid: false,
             counter_posadd_valid: true,
             counter_negadd_valid: true,
             counter_minval_valid: true,
@@ -117,7 +119,12 @@ pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyEvent) {
         }
         KeyCode::Enter => create_new_counter(dt),
         _ => match dt.new_counter.current_focus {
-            CurrentFocus::Name => if dt.new_counter.counter_name_textarea.input(*key) {},
+            CurrentFocus::Name => {
+                let textarea = &mut dt.new_counter.counter_name_textarea;
+                if textarea.input(*key) {
+                    dt.new_counter.counter_name_valid = validate_name(textarea);
+                }
+            }
             CurrentFocus::PosAdd => {
                 let textarea = &mut dt.new_counter.counter_posadd_textarea;
                 if textarea.input(*key) {
@@ -154,6 +161,17 @@ fn focus_highlight(focused: bool) -> Style {
     }
 }
 
+fn validate_name(textarea: &mut TextArea) -> bool {
+    let length = textarea.lines()[0].len();
+    if length > 40 || length < 1 {
+        textarea.set_style(Style::default().fg(Color::Black).bg(Color::Red));
+        false
+    } else {
+        textarea.set_style(Style::default());
+        true
+    }
+}
+
 fn validate_ints(textarea: &mut TextArea) -> bool {
     if let Err(_err) = textarea.lines()[0].parse::<i64>() {
         textarea.set_style(Style::default().fg(Color::Black).bg(Color::Red));
@@ -165,7 +183,7 @@ fn validate_ints(textarea: &mut TextArea) -> bool {
 }
 
 fn create_new_counter(dt: &mut DumbTallyApp) {
-    if dt.new_counter.counter_name_textarea.lines()[0].len() <= 40
+    if dt.new_counter.counter_name_valid
         && dt.new_counter.counter_posadd_valid
         && dt.new_counter.counter_negadd_valid
         && dt.new_counter.counter_minval_valid
