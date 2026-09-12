@@ -19,9 +19,9 @@ Prerequisites:
 ## Roadmap.
 - [X] Bigger font on smaller numbers
 - [X] Allow jumping to minimum and maximum value
+- [X] Defaults pre-filled in the new counter screen
+- [X] Visual feedback on counter name validation
 - [ ] Editing & deleting counters within the TUI
-- [ ] Defaults pre-filled in the new counter screen
-- [ ] Visual feedback on counter name validation
 - [ ] ???
 
 ## License.

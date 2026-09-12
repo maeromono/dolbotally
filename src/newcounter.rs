@@ -9,7 +9,6 @@ use ratatui::{
 };
 use ratatui_textarea::TextArea;
 
-#[derive(Default)]
 pub struct NewCounter {
     current_focus: CurrentFocus,
     counter_name_textarea: TextArea<'static>,
@@ -21,6 +20,23 @@ pub struct NewCounter {
     counter_negadd_valid: bool,
     counter_minval_valid: bool,
     counter_maxval_valid: bool,
+}
+
+impl Default for NewCounter {
+    fn default() -> Self {
+        Self {
+            current_focus: CurrentFocus::Name,
+            counter_name_textarea: TextArea::default(),
+            counter_posadd_textarea: TextArea::new(vec![String::from('1')]),
+            counter_negadd_textarea: TextArea::new(vec![String::from('1')]),
+            counter_minval_textarea: TextArea::new(vec![String::from('0')]),
+            counter_maxval_textarea: TextArea::new(vec![String::from("50")]),
+            counter_posadd_valid: true,
+            counter_negadd_valid: true,
+            counter_minval_valid: true,
+            counter_maxval_valid: true,
+        }
+    }
 }
 
 #[derive(Default, Sequence)]
