@@ -20,3 +20,9 @@ ratatui-textarea = "0.9.2"
 serde = { version = "1.0.229", features = ["serde_derive"] }
 toml = "1.1.5"
 tui-big-text = "0.8.9"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+strip = "symbols"
