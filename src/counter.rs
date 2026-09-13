@@ -79,7 +79,7 @@ pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyEvent) {
         KeyCode::Char('g') => change_current_counter_val(dt, ChangeCounterValue::Min),
         KeyCode::Char('G') => change_current_counter_val(dt, ChangeCounterValue::Max),
         KeyCode::Char('r') => change_current_counter_val(dt, ChangeCounterValue::Reset),
-        KeyCode::Char('n') => dt.state = DumbTallyAppState::NewCounter,
+        KeyCode::Char('n') => dt.state = DumbTallyAppState::CounterEdit,
         KeyCode::Esc => dt.state = DumbTallyAppState::CounterPick,
         _ => {}
     }

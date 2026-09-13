@@ -21,7 +21,7 @@ pub struct DumbTallyApp {
     pub state: DumbTallyAppState,
     pub counters: DolbotallyCounters,
     pub counter_list: ListState,
-    pub new_counter: CounterEdit,
+    pub counter_edit: CounterEdit,
     pub cached_counter_name: String,
 }
 
@@ -31,7 +31,7 @@ impl Default for DumbTallyApp {
             state: DumbTallyAppState::Main,
             counters: DolbotallyCounters::default(),
             counter_list: ListState::default().with_selected(Some(0)),
-            new_counter: CounterEdit::default(),
+            counter_edit: CounterEdit::default(),
             cached_counter_name: String::from("No counter")
         }
     }
@@ -51,7 +51,7 @@ pub struct Counter {
 pub enum DumbTallyAppState {
     Main,
     CounterPick,
-    NewCounter,
+    CounterEdit,
     Quit,
 }
 
@@ -93,7 +93,7 @@ impl DumbTallyApp {
             match self.state {
                 DumbTallyAppState::Main => render_counter(self, frame, main_layout[1]),
                 DumbTallyAppState::CounterPick => render_counter_list(self, frame, main_layout[1]),
-                DumbTallyAppState::NewCounter => {
+                DumbTallyAppState::CounterEdit => {
                     render_countermake_screen(self, frame, main_layout[1])
                 }
                 _ => {},
@@ -107,7 +107,7 @@ impl DumbTallyApp {
         match self.state {
             DumbTallyAppState::Main => counter::handle_keys(self, key),
             DumbTallyAppState::CounterPick => counterlist::handle_keys(self, key),
-            DumbTallyAppState::NewCounter => counteredit::handle_keys(self, key),
+            DumbTallyAppState::CounterEdit => counteredit::handle_keys(self, key),
             _ => {}
         }
     }

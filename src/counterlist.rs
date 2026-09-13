@@ -36,8 +36,8 @@ pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyEvent) {
             let Some(counter_edit) = CounterEdit::edit(dt, dt.counters.counter_index) else {
                 return;
             };
-            dt.new_counter = counter_edit;
-            dt.state = DumbTallyAppState::NewCounter;
+            dt.counter_edit = counter_edit;
+            dt.state = DumbTallyAppState::CounterEdit;
         }
         _ => {}
     }

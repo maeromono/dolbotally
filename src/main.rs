@@ -15,7 +15,7 @@ fn main() {
     let mut dt = DumbTallyApp::default();
     dt.counters = load_counters().unwrap_or_default();
     if dt.counters.counters.is_empty() {
-        dt.state = DumbTallyAppState::NewCounter;
+        dt.state = DumbTallyAppState::CounterEdit;
     }
     if let Err(err) = run(|term| dt.run(term)) {
         eprintln!("!! Terminal error: {}", err);

@@ -23,7 +23,7 @@ pub fn render_footer(dt: &DumbTallyApp, frame: &mut Frame, area: Rect) {
     let bind_help_string = match dt.state {
         DumbTallyAppState::Main => "Esc list, - subtract, = add, n new",
         DumbTallyAppState::CounterPick => "Esc back, j/k navigate, Enter confirm",
-        DumbTallyAppState::NewCounter => "Esc cancel, Tab cycle, Enter confirm",
+        DumbTallyAppState::CounterEdit => "Esc cancel, Tab cycle, Enter confirm",
         _ => "",
     };
     let bind_help = Paragraph::new(bind_help_string).centered();

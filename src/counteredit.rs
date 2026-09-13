@@ -92,18 +92,18 @@ pub fn render_countermake_screen(dt: &mut DumbTallyApp, frame: &mut Frame, area:
     let negadd_field_layout = field_layout.clone().split(newcounter_layout[2]);
     let minval_field_layout = field_layout.clone().split(newcounter_layout[3]);
     let maxval_field_layout = field_layout.clone().split(newcounter_layout[4]);
-    let focus = &dt.new_counter.current_focus;
+    let focus = &dt.counter_edit.current_focus;
     frame.render_widget(
         Paragraph::new("Counter name").style(focus_highlight(matches!(focus, CurrentFocus::Name))),
         name_field_layout[0],
     );
-    frame.render_widget(&dt.new_counter.counter_name_textarea, name_field_layout[1]);
+    frame.render_widget(&dt.counter_edit.counter_name_textarea, name_field_layout[1]);
     frame.render_widget(
         Paragraph::new("Add amount").style(focus_highlight(matches!(focus, CurrentFocus::PosAdd))),
         posadd_field_layout[0],
     );
     frame.render_widget(
-        &dt.new_counter.counter_posadd_textarea,
+        &dt.counter_edit.counter_posadd_textarea,
         posadd_field_layout[1],
     );
     frame.render_widget(
@@ -111,7 +111,7 @@ pub fn render_countermake_screen(dt: &mut DumbTallyApp, frame: &mut Frame, area:
         negadd_field_layout[0],
     );
     frame.render_widget(
-        &dt.new_counter.counter_negadd_textarea,
+        &dt.counter_edit.counter_negadd_textarea,
         negadd_field_layout[1],
     );
     frame.render_widget(
@@ -119,7 +119,7 @@ pub fn render_countermake_screen(dt: &mut DumbTallyApp, frame: &mut Frame, area:
         minval_field_layout[0],
     );
     frame.render_widget(
-        &dt.new_counter.counter_minval_textarea,
+        &dt.counter_edit.counter_minval_textarea,
         minval_field_layout[1],
     );
     frame.render_widget(
@@ -127,7 +127,7 @@ pub fn render_countermake_screen(dt: &mut DumbTallyApp, frame: &mut Frame, area:
         maxval_field_layout[0],
     );
     frame.render_widget(
-        &dt.new_counter.counter_maxval_textarea,
+        &dt.counter_edit.counter_maxval_textarea,
         maxval_field_layout[1],
     );
 }
@@ -138,40 +138,40 @@ pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyEvent) {
             dt.state = DumbTallyAppState::Main;
             reset_textareas(dt);
         }
-        KeyCode::Tab => dt.new_counter.current_focus = next_cycle(&dt.new_counter.current_focus),
+        KeyCode::Tab => dt.counter_edit.current_focus = next_cycle(&dt.counter_edit.current_focus),
         KeyCode::BackTab => {
-            dt.new_counter.current_focus = previous_cycle(&dt.new_counter.current_focus)
+            dt.counter_edit.current_focus = previous_cycle(&dt.counter_edit.current_focus)
         }
         KeyCode::Enter => confirm_edit(dt),
-        _ => match dt.new_counter.current_focus {
+        _ => match dt.counter_edit.current_focus {
             CurrentFocus::Name => {
-                let textarea = &mut dt.new_counter.counter_name_textarea;
+                let textarea = &mut dt.counter_edit.counter_name_textarea;
                 if textarea.input(*key) {
-                    dt.new_counter.counter_name_valid = validate_name(textarea);
+                    dt.counter_edit.counter_name_valid = validate_name(textarea);
                 }
             }
             CurrentFocus::PosAdd => {
-                let textarea = &mut dt.new_counter.counter_posadd_textarea;
+                let textarea = &mut dt.counter_edit.counter_posadd_textarea;
                 if textarea.input(*key) {
-                    dt.new_counter.counter_posadd_valid = validate_ints(textarea);
+                    dt.counter_edit.counter_posadd_valid = validate_ints(textarea);
                 }
             }
             CurrentFocus::NegAdd => {
-                let textarea = &mut dt.new_counter.counter_negadd_textarea;
+                let textarea = &mut dt.counter_edit.counter_negadd_textarea;
                 if textarea.input(*key) {
-                    dt.new_counter.counter_negadd_valid = validate_ints(textarea);
+                    dt.counter_edit.counter_negadd_valid = validate_ints(textarea);
                 }
             }
             CurrentFocus::MinVal => {
-                let textarea = &mut dt.new_counter.counter_minval_textarea;
+                let textarea = &mut dt.counter_edit.counter_minval_textarea;
                 if textarea.input(*key) {
-                    dt.new_counter.counter_minval_valid = validate_ints(textarea);
+                    dt.counter_edit.counter_minval_valid = validate_ints(textarea);
                 }
             }
             CurrentFocus::MaxVal => {
-                let textarea = &mut dt.new_counter.counter_maxval_textarea;
+                let textarea = &mut dt.counter_edit.counter_maxval_textarea;
                 if textarea.input(*key) {
-                    dt.new_counter.counter_maxval_valid = validate_ints(textarea);
+                    dt.counter_edit.counter_maxval_valid = validate_ints(textarea);
                 }
             }
         },
@@ -208,27 +208,27 @@ fn validate_ints(textarea: &mut TextArea) -> bool {
 }
 
 fn confirm_edit(dt: &mut DumbTallyApp) {
-    if dt.new_counter.counter_name_valid
-        && dt.new_counter.counter_posadd_valid
-        && dt.new_counter.counter_negadd_valid
-        && dt.new_counter.counter_minval_valid
-        && dt.new_counter.counter_maxval_valid
+    if dt.counter_edit.counter_name_valid
+        && dt.counter_edit.counter_posadd_valid
+        && dt.counter_edit.counter_negadd_valid
+        && dt.counter_edit.counter_minval_valid
+        && dt.counter_edit.counter_maxval_valid
     {
-        let min_val = dt.new_counter.counter_minval_textarea.lines()[0]
+        let min_val = dt.counter_edit.counter_minval_textarea.lines()[0]
             .parse()
             .unwrap();
-        match dt.new_counter.mode {
+        match dt.counter_edit.mode {
             CounterEditMode::New => dt.counters.counters.push(Counter {
-                name: dt.new_counter.counter_name_textarea.lines()[0].clone(),
+                name: dt.counter_edit.counter_name_textarea.lines()[0].clone(),
                 value: if min_val > 0 { min_val } else { 0 },
-                pos_add: dt.new_counter.counter_posadd_textarea.lines()[0]
+                pos_add: dt.counter_edit.counter_posadd_textarea.lines()[0]
                     .parse()
                     .unwrap(),
-                neg_add: dt.new_counter.counter_negadd_textarea.lines()[0]
+                neg_add: dt.counter_edit.counter_negadd_textarea.lines()[0]
                     .parse()
                     .unwrap(),
                 min_val,
-                max_val: dt.new_counter.counter_maxval_textarea.lines()[0]
+                max_val: dt.counter_edit.counter_maxval_textarea.lines()[0]
                     .parse()
                     .unwrap(),
             }),
@@ -236,20 +236,20 @@ fn confirm_edit(dt: &mut DumbTallyApp) {
                 let Some(counter) = dt.counters.counters.get_mut(ind) else {
                     return;
                 };
-                counter.name = dt.new_counter.counter_name_textarea.lines()[0].clone();
+                counter.name = dt.counter_edit.counter_name_textarea.lines()[0].clone();
                 counter.value = if min_val > counter.value {
                     min_val
                 } else {
                     counter.value
                 };
-                counter.pos_add = dt.new_counter.counter_posadd_textarea.lines()[0]
+                counter.pos_add = dt.counter_edit.counter_posadd_textarea.lines()[0]
                     .parse()
                     .unwrap();
-                counter.neg_add = dt.new_counter.counter_negadd_textarea.lines()[0]
+                counter.neg_add = dt.counter_edit.counter_negadd_textarea.lines()[0]
                     .parse()
                     .unwrap();
                 counter.min_val = min_val;
-                counter.max_val = dt.new_counter.counter_maxval_textarea.lines()[0]
+                counter.max_val = dt.counter_edit.counter_maxval_textarea.lines()[0]
                     .parse()
                     .unwrap();
             }
@@ -261,5 +261,5 @@ fn confirm_edit(dt: &mut DumbTallyApp) {
 }
 
 fn reset_textareas(dt: &mut DumbTallyApp) {
-    dt.new_counter = CounterEdit::default();
+    dt.counter_edit = CounterEdit::default();
 }
