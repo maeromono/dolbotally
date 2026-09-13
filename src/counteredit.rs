@@ -24,8 +24,8 @@ pub struct CounterEdit {
     counter_maxval_valid: bool,
 }
 
-impl Default for CounterEdit {
-    fn default() -> Self {
+impl CounterEdit {
+    pub fn default() -> Self {
         Self {
             mode: CounterEditMode::New,
             current_focus: CurrentFocus::Name,
@@ -41,11 +41,29 @@ impl Default for CounterEdit {
             counter_maxval_valid: true,
         }
     }
+
+    pub fn edit(dt: &mut DumbTallyApp, ind: usize) -> Option<Self> {
+        let counter = dt.counters.counters.get(ind)?;
+        Some(Self {
+            mode: CounterEditMode::Existing(ind),
+            current_focus: CurrentFocus::Name,
+            counter_name_textarea: TextArea::new(vec![counter.name.clone()]),
+            counter_posadd_textarea: TextArea::new(vec![counter.pos_add.to_string()]),
+            counter_negadd_textarea: TextArea::new(vec![counter.neg_add.to_string()]),
+            counter_minval_textarea: TextArea::new(vec![counter.min_val.to_string()]),
+            counter_maxval_textarea: TextArea::new(vec![counter.max_val.to_string()]),
+            counter_name_valid: true,
+            counter_posadd_valid: true,
+            counter_negadd_valid: true,
+            counter_minval_valid: true,
+            counter_maxval_valid: true,
+        })
+    }
 }
 
 pub enum CounterEditMode {
     New,
-    Existing(usize)
+    Existing(usize),
 }
 
 #[derive(Default, Sequence)]
@@ -199,20 +217,43 @@ fn confirm_edit(dt: &mut DumbTallyApp) {
         let min_val = dt.new_counter.counter_minval_textarea.lines()[0]
             .parse()
             .unwrap();
-        dt.counters.counters.push(Counter {
-            name: dt.new_counter.counter_name_textarea.lines()[0].clone(),
-            value: if min_val > 0 { min_val } else { 0 },
-            pos_add: dt.new_counter.counter_posadd_textarea.lines()[0]
-                .parse()
-                .unwrap(),
-            neg_add: dt.new_counter.counter_negadd_textarea.lines()[0]
-                .parse()
-                .unwrap(),
-            min_val,
-            max_val: dt.new_counter.counter_maxval_textarea.lines()[0]
-                .parse()
-                .unwrap(),
-        });
+        match dt.new_counter.mode {
+            CounterEditMode::New => dt.counters.counters.push(Counter {
+                name: dt.new_counter.counter_name_textarea.lines()[0].clone(),
+                value: if min_val > 0 { min_val } else { 0 },
+                pos_add: dt.new_counter.counter_posadd_textarea.lines()[0]
+                    .parse()
+                    .unwrap(),
+                neg_add: dt.new_counter.counter_negadd_textarea.lines()[0]
+                    .parse()
+                    .unwrap(),
+                min_val,
+                max_val: dt.new_counter.counter_maxval_textarea.lines()[0]
+                    .parse()
+                    .unwrap(),
+            }),
+            CounterEditMode::Existing(ind) => {
+                let Some(counter) = dt.counters.counters.get_mut(ind) else {
+                    return;
+                };
+                counter.name = dt.new_counter.counter_name_textarea.lines()[0].clone();
+                counter.value = if min_val > counter.value {
+                    min_val
+                } else {
+                    counter.value
+                };
+                counter.pos_add = dt.new_counter.counter_posadd_textarea.lines()[0]
+                    .parse()
+                    .unwrap();
+                counter.neg_add = dt.new_counter.counter_negadd_textarea.lines()[0]
+                    .parse()
+                    .unwrap();
+                counter.min_val = min_val;
+                counter.max_val = dt.new_counter.counter_maxval_textarea.lines()[0]
+                    .parse()
+                    .unwrap();
+            }
+        }
         dt.save();
         reset_textareas(dt);
         dt.state = DumbTallyAppState::Main;

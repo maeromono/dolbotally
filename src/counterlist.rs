@@ -6,7 +6,7 @@ use ratatui::{
     widgets::List,
 };
 
-use crate::dt::{DumbTallyApp, DumbTallyAppState};
+use crate::{counteredit::CounterEdit, dt::{DumbTallyApp, DumbTallyAppState}};
 
 pub fn render_counter_list(dt: &mut DumbTallyApp, frame: &mut Frame, area: Rect) {
     let mut counter_list: Vec<String> = vec![];
@@ -30,6 +30,14 @@ pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyEvent) {
         KeyCode::Enter | KeyCode::Char(' ') => {
             dt.counters.counter_index = dt.counter_list.selected().unwrap_or_default();
             dt.state = DumbTallyAppState::Main;
+        }
+        KeyCode::Char('e') => {
+            dt.counters.counter_index = dt.counter_list.selected().unwrap_or_default();
+            let Some(counter_edit) = CounterEdit::edit(dt, dt.counters.counter_index) else {
+                return;
+            };
+            dt.new_counter = counter_edit;
+            dt.state = DumbTallyAppState::NewCounter;
         }
         _ => {}
     }
