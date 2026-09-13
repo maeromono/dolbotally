@@ -2,14 +2,26 @@ use crossterm::event::{KeyCode, KeyEvent};
 use ratatui::{
     Frame,
     layout::{Constraint, Rect},
-    style::Modifier,
-    widgets::List,
+    style::{Modifier, Stylize},
+    widgets::{List, Paragraph},
 };
 
-use crate::{counteredit::CounterEdit, dt::{DumbTallyApp, DumbTallyAppState}};
+use crate::{
+    counteredit::CounterEdit,
+    dt::{DumbTallyApp, DumbTallyAppState},
+};
 
 pub fn render_counter_list(dt: &mut DumbTallyApp, frame: &mut Frame, area: Rect) {
     let mut counter_list: Vec<String> = vec![];
+    if dt.counters.counters.len() == 0 {
+        frame.render_widget(
+            Paragraph::new("No counters.\nHit Esc, then n\nto make a new counter.")
+                .red()
+                .bold(),
+            area,
+        );
+        return;
+    }
     for counter in &dt.counters.counters {
         counter_list.push(format!("[{}] {}", counter.value, counter.name));
     }
@@ -40,9 +52,11 @@ pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyEvent) {
             dt.state = DumbTallyAppState::CounterEdit;
         }
         KeyCode::Char('d') => {
-            let mut counter_index = dt.counters.counter_index;
+            let mut counter_index = dt.counter_list.selected().unwrap_or_default();
             dt.counters.counters.remove(counter_index);
-            if counter_index >= dt.counters.counters.len() {
+            if dt.counters.counters.len() == 0 {
+                dt.state = DumbTallyAppState::CounterEdit;
+            } else if counter_index >= dt.counters.counters.len() {
                 counter_index -= 1;
                 dt.counters.counter_index = counter_index;
             }
