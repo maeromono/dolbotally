@@ -8,7 +8,7 @@ mod counter;
 mod counterlist;
 mod dt;
 mod dtmain;
-mod newcounter;
+mod counteredit;
 mod save;
 
 fn main() {

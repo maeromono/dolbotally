@@ -13,7 +13,7 @@ use crate::{
     counter::{self, render_counter},
     counterlist::{self, render_counter_list},
     dtmain::{render_footer, render_header},
-    newcounter::{self, NewCounter, render_countermake_screen},
+    counteredit::{self, CounterEdit, render_countermake_screen},
     save::{DolbotallyCounters, save_counters},
 };
 
@@ -21,7 +21,7 @@ pub struct DumbTallyApp {
     pub state: DumbTallyAppState,
     pub counters: DolbotallyCounters,
     pub counter_list: ListState,
-    pub new_counter: NewCounter,
+    pub new_counter: CounterEdit,
     pub cached_counter_name: String,
 }
 
@@ -31,7 +31,7 @@ impl Default for DumbTallyApp {
             state: DumbTallyAppState::Main,
             counters: DolbotallyCounters::default(),
             counter_list: ListState::default().with_selected(Some(0)),
-            new_counter: NewCounter::default(),
+            new_counter: CounterEdit::default(),
             cached_counter_name: String::from("No counter")
         }
     }
@@ -107,7 +107,7 @@ impl DumbTallyApp {
         match self.state {
             DumbTallyAppState::Main => counter::handle_keys(self, key),
             DumbTallyAppState::CounterPick => counterlist::handle_keys(self, key),
-            DumbTallyAppState::NewCounter => newcounter::handle_keys(self, key),
+            DumbTallyAppState::NewCounter => counteredit::handle_keys(self, key),
             _ => {}
         }
     }

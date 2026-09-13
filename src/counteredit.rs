@@ -9,7 +9,8 @@ use ratatui::{
 };
 use ratatui_textarea::TextArea;
 
-pub struct NewCounter {
+pub struct CounterEdit {
+    mode: CounterEditMode,
     current_focus: CurrentFocus,
     counter_name_textarea: TextArea<'static>,
     counter_posadd_textarea: TextArea<'static>,
@@ -23,9 +24,10 @@ pub struct NewCounter {
     counter_maxval_valid: bool,
 }
 
-impl Default for NewCounter {
+impl Default for CounterEdit {
     fn default() -> Self {
         Self {
+            mode: CounterEditMode::New,
             current_focus: CurrentFocus::Name,
             counter_name_textarea: TextArea::default(),
             counter_posadd_textarea: TextArea::new(vec![String::from('1')]),
@@ -39,6 +41,11 @@ impl Default for NewCounter {
             counter_maxval_valid: true,
         }
     }
+}
+
+pub enum CounterEditMode {
+    New,
+    Existing(usize)
 }
 
 #[derive(Default, Sequence)]
@@ -117,7 +124,7 @@ pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyEvent) {
         KeyCode::BackTab => {
             dt.new_counter.current_focus = previous_cycle(&dt.new_counter.current_focus)
         }
-        KeyCode::Enter => create_new_counter(dt),
+        KeyCode::Enter => confirm_edit(dt),
         _ => match dt.new_counter.current_focus {
             CurrentFocus::Name => {
                 let textarea = &mut dt.new_counter.counter_name_textarea;
@@ -182,7 +189,7 @@ fn validate_ints(textarea: &mut TextArea) -> bool {
     }
 }
 
-fn create_new_counter(dt: &mut DumbTallyApp) {
+fn confirm_edit(dt: &mut DumbTallyApp) {
     if dt.new_counter.counter_name_valid
         && dt.new_counter.counter_posadd_valid
         && dt.new_counter.counter_negadd_valid
@@ -213,5 +220,5 @@ fn create_new_counter(dt: &mut DumbTallyApp) {
 }
 
 fn reset_textareas(dt: &mut DumbTallyApp) {
-    dt.new_counter = NewCounter::default();
+    dt.new_counter = CounterEdit::default();
 }
