@@ -218,20 +218,23 @@ fn confirm_edit(dt: &mut DumbTallyApp) {
             .parse()
             .unwrap();
         match dt.counter_edit.mode {
-            CounterEditMode::New => dt.counters.counters.push(Counter {
-                name: dt.counter_edit.counter_name_textarea.lines()[0].clone(),
-                value: if min_val > 0 { min_val } else { 0 },
-                pos_add: dt.counter_edit.counter_posadd_textarea.lines()[0]
-                    .parse()
-                    .unwrap(),
-                neg_add: dt.counter_edit.counter_negadd_textarea.lines()[0]
-                    .parse()
-                    .unwrap(),
-                min_val,
-                max_val: dt.counter_edit.counter_maxval_textarea.lines()[0]
-                    .parse()
-                    .unwrap(),
-            }),
+            CounterEditMode::New => {
+                dt.counters.counters.push(Counter {
+                    name: dt.counter_edit.counter_name_textarea.lines()[0].clone(),
+                    value: if min_val > 0 { min_val } else { 0 },
+                    pos_add: dt.counter_edit.counter_posadd_textarea.lines()[0]
+                        .parse()
+                        .unwrap(),
+                    neg_add: dt.counter_edit.counter_negadd_textarea.lines()[0]
+                        .parse()
+                        .unwrap(),
+                    min_val,
+                    max_val: dt.counter_edit.counter_maxval_textarea.lines()[0]
+                        .parse()
+                        .unwrap(),
+                });
+                dt.state = DumbTallyAppState::Main;
+            }
             CounterEditMode::Existing(ind) => {
                 let Some(counter) = dt.counters.counters.get_mut(ind) else {
                     return;
@@ -252,11 +255,11 @@ fn confirm_edit(dt: &mut DumbTallyApp) {
                 counter.max_val = dt.counter_edit.counter_maxval_textarea.lines()[0]
                     .parse()
                     .unwrap();
+                dt.state = DumbTallyAppState::CounterPick;
             }
         }
         dt.save();
         reset_textareas(dt);
-        dt.state = DumbTallyAppState::Main;
     }
 }
 

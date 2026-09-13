@@ -39,6 +39,14 @@ pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyEvent) {
             dt.counter_edit = counter_edit;
             dt.state = DumbTallyAppState::CounterEdit;
         }
+        KeyCode::Char('d') => {
+            let mut counter_index = dt.counters.counter_index;
+            dt.counters.counters.remove(counter_index);
+            if counter_index >= dt.counters.counters.len() {
+                counter_index -= 1;
+                dt.counters.counter_index = counter_index;
+            }
+        }
         _ => {}
     }
 }
