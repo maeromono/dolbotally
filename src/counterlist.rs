@@ -46,6 +46,7 @@ pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyEvent) {
                 counter_index -= 1;
                 dt.counters.counter_index = counter_index;
             }
+            dt.save();
         }
         _ => {}
     }
