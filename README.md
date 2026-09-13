@@ -21,7 +21,8 @@ Prerequisites:
 - [X] Allow jumping to minimum and maximum value
 - [X] Defaults pre-filled in the new counter screen
 - [X] Visual feedback on counter name validation
-- [ ] Editing & deleting counters within the TUI
+- [X] Editing & deleting counters within the TUI
+- [ ] Confirmation requirement for counter deletion
 - [ ] ???
 
 ## License.
