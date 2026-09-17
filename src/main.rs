@@ -9,6 +9,7 @@ mod counterlist;
 mod dt;
 mod dtmain;
 mod counteredit;
+mod counterdelete;
 mod save;
 
 fn main() {

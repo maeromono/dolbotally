@@ -11,9 +11,10 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     counter::{self, render_counter},
+    counterdelete::{self, CounterDelete, render_counterdelete_screen},
+    counteredit::{self, CounterEdit, render_countermake_screen},
     counterlist::{self, render_counter_list},
     dtmain::{render_footer, render_header},
-    counteredit::{self, CounterEdit, render_countermake_screen},
     save::{DolbotallyCounters, save_counters},
 };
 
@@ -22,6 +23,7 @@ pub struct DumbTallyApp {
     pub counters: DolbotallyCounters,
     pub counter_list: ListState,
     pub counter_edit: CounterEdit,
+    pub counter_delete: CounterDelete,
     pub cached_counter_name: String,
 }
 
@@ -32,7 +34,8 @@ impl Default for DumbTallyApp {
             counters: DolbotallyCounters::default(),
             counter_list: ListState::default().with_selected(Some(0)),
             counter_edit: CounterEdit::default(),
-            cached_counter_name: String::from("No counter")
+            counter_delete: CounterDelete::default(),
+            cached_counter_name: String::from("No counter"),
         }
     }
 }
@@ -52,6 +55,7 @@ pub enum DumbTallyAppState {
     Main,
     CounterPick,
     CounterEdit,
+    CounterDelete,
     Quit,
 }
 
@@ -96,7 +100,10 @@ impl DumbTallyApp {
                 DumbTallyAppState::CounterEdit => {
                     render_countermake_screen(self, frame, main_layout[1])
                 }
-                _ => {},
+                DumbTallyAppState::CounterDelete => {
+                    render_counterdelete_screen(self, frame, main_layout[1])
+                }
+                _ => {}
             }
             render_header(&self, frame, main_layout[0]);
             render_footer(&self, frame, main_layout[2]);
@@ -108,6 +115,7 @@ impl DumbTallyApp {
             DumbTallyAppState::Main => counter::handle_keys(self, key),
             DumbTallyAppState::CounterPick => counterlist::handle_keys(self, key),
             DumbTallyAppState::CounterEdit => counteredit::handle_keys(self, key),
+            DumbTallyAppState::CounterDelete => counterdelete::handle_keys(self, key),
             _ => {}
         }
     }
