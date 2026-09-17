@@ -22,7 +22,7 @@ Prerequisites:
 - [X] Defaults pre-filled in the new counter screen
 - [X] Visual feedback on counter name validation
 - [X] Editing & deleting counters within the TUI
-- [ ] Confirmation requirement for counter deletion
+- [X] Confirmation requirement for counter deletion
 - [ ] ???
 
 ## License.
