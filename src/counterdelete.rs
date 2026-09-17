@@ -53,7 +53,10 @@ pub fn handle_keys(dt: &mut DumbTallyApp, key: &KeyEvent) {
             dt.state = DumbTallyAppState::CounterPick;
             reset_textareas(dt);
         }
-        KeyCode::Enter => confirm_delete(dt),
+        KeyCode::Enter => {
+            confirm_delete(dt);
+            reset_textareas(dt);
+        }
         _ => {
             let textarea = &mut dt.counter_delete.counter_delete_textarea;
             if textarea.input(*key) {
