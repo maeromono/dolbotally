@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     counter::{self, render_counter},
-    counterdelete::{self, CounterDelete, render_counterdelete_screen},
+    counterdelete::{self, render_counterdelete_screen},
     counteredit::{self, CounterEdit, render_countermake_screen},
     counterlist::{self, render_counter_list},
     dtmain::{render_footer, render_header},
@@ -23,7 +23,6 @@ pub struct DumbTallyApp {
     pub counters: DolbotallyCounters,
     pub counter_list: ListState,
     pub counter_edit: CounterEdit,
-    pub counter_delete: CounterDelete,
     pub cached_counter_name: String,
 }
 
@@ -34,7 +33,6 @@ impl Default for DumbTallyApp {
             counters: DolbotallyCounters::default(),
             counter_list: ListState::default().with_selected(Some(0)),
             counter_edit: CounterEdit::default(),
-            counter_delete: CounterDelete::default(),
             cached_counter_name: String::from("No counter"),
         }
     }
