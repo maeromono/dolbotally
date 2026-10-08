@@ -22,7 +22,7 @@ impl Default for DolbotallyCounters {
 }
 
 fn save_path() -> Result<PathBuf> {
-    let dirs = ProjectDirs::from("org.neocities", "enmkdev", "dolbotally")
+    let dirs = ProjectDirs::from("page.codeberg", "enmkdev", "dolbotally")
         .ok_or_else(|| Error::new(ErrorKind::NotFound, "cannot locate data directory"))?;
     Ok(dirs.data_dir().join("counters.toml"))
 }
