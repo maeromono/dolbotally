@@ -1,7 +1,6 @@
 use ratatui::{
     Frame,
     layout::{Constraint, Layout, Rect},
-    style::Stylize,
     widgets::Paragraph,
 };
 
@@ -9,7 +8,7 @@ use crate::dt::{DumbTallyApp, DumbTallyAppState};
 
 pub fn render_header(dt: &DumbTallyApp, frame: &mut Frame, area: Rect) {
     let header = Layout::horizontal([Constraint::Length(18), Constraint::Fill(2)]).split(area);
-    let name_and_ver = Paragraph::new("dolbotally v0.4.2");
+    let name_and_ver = Paragraph::new("dolbotally v0.4.3");
     let wm = if dt.state == DumbTallyAppState::Main {
         Paragraph::new(dt.cached_counter_name.clone()).right_aligned()
     } else {
