@@ -13,7 +13,7 @@ pub fn render_header(dt: &DumbTallyApp, frame: &mut Frame, area: Rect) {
     let wm = if dt.state == DumbTallyAppState::Main {
         Paragraph::new(dt.cached_counter_name.clone()).right_aligned()
     } else {
-        Paragraph::new("enmkdev.codeberg.page").right_aligned()
+        Paragraph::new("maeromono.codeberg.page").right_aligned()
     };
     frame.render_widget(name_and_ver, header[0]);
     frame.render_widget(wm, header[1]);
