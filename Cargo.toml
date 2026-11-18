@@ -1,12 +1,12 @@
 [package]
 name = "dolbotally"
-version = "0.4.3"
+version = "0.4.4"
 authors = ["MaeroMono"]
 edition = "2024"
 license = "GPL-3.0"
 description = "Frankly simplish multi-tally counter."
 repository = "https://codeberg.org/maeromono/dolbotally"
-homepage = "https://maeromono.codeberg.page/projects/dolbotally/"
+homepage = "https://maeromono.surge.sh/projects/dolbotally/"
 readme = "README.md"
 keywords = ["tui", "tally", "counter"]
 categories = ["command-line-interface", "command-line-utilities"]

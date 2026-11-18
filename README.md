@@ -6,14 +6,14 @@ dolbotally is a frankly simplish multi-tally counter. It allows you to make unli
 Prerequisites:
 - Rust/Cargo installed on your system (preferrably latest possible version)
 
-### Through Cargo (recommended)
+### Latest release (recommended)
 ```bash
     cargo install --locked dolbotally
 ```
 
 ### From source
 ```bash
-    git clone https://codeberg.org/enmkdev/dolbotally && cd dolbotally && cargo install --path .
+    git clone https://codeberg.org/maeromono/dolbotally && cd dolbotally && cargo install --path .
 ```
 
 ## Roadmap.
@@ -26,4 +26,4 @@ Prerequisites:
 - [ ] ???
 
 ## License.
-GPL-3.0 only. Read more in [the license file](https://codeberg.org/enmkdev/dolbotally/src/branch/main/LICENSE.md).
+GPL-3.0 only. Read more in [the license file](https://codeberg.org/maeromono/dolbotally/src/branch/main/LICENSE.md).
