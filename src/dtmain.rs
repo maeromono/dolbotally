@@ -12,7 +12,7 @@ pub fn render_header(dt: &DumbTallyApp, frame: &mut Frame, area: Rect) {
     let wm = if dt.state == DumbTallyAppState::Main {
         Paragraph::new(dt.cached_counter_name.clone()).right_aligned()
     } else {
-        Paragraph::new("maeromono.surge.sh").right_aligned()
+        Paragraph::new("maero.surge.sh").right_aligned()
     };
     frame.render_widget(name_and_ver, header[0]);
     frame.render_widget(wm, header[1]);
